@@ -302,6 +302,7 @@ def find_EL_LFC_CIN_CAPE(T_env, p_env, qv_env, z0=0, Need_Precise_val = False):
     #     if B[k] > 0:
     #         CAPE += B[k] * dz
     z_CIN = np.concatenate([z_env[:LFC_idx], [np.interp(LFC_precise, p_env[::-1], z_env[::-1])]])
+    
     B_CIN = np.interp(z_CIN, z_env, B)
     mask = B_CIN < 0
     CIN = np.trapz(B_CIN[mask], z_CIN[mask])

@@ -2,7 +2,7 @@
 name = "irruii-tools"
 version = "0.0.1"
 description = "Tools by irruii"
-authors = [{ mane = "irruii (Iris Hsu, aka Sparrow)"}]
+authors = [{ name = "irruii (Iris Hsu, aka Sparrow)"}]
 requires-python = ">=3.8"
 
 [build-system]
