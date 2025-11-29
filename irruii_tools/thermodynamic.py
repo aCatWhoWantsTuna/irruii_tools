@@ -102,14 +102,13 @@ def interp_profile(x, y, x_target, log_x=True):
     
 def dry_adiabatic(T0, p_prof):
     T_parcel = theta(T0, p_prof[0]) * (p_prof / 1000) ** (Rd/Cp)
-    # print(T_parcel)
     return T_parcel
 
 def moist_adiabatic(T_prev, p_prev, p_next, qv_prev, tol=1e-6, max_iter=100):
 
-    T_temp = dry_adiabatic(T_prev, np.array([p_prev, p_next]))[1]
-    T_min = T_temp-10.
-    T_max = T_min+20.
+    T_temp = dry_adiabatic(T_prev, np.array([p_prev, p_next]))[-1]
+    T_min = T_temp
+    T_max = 350.
     
     for i in range(max_iter):
         T_mid = 0.5 * (T_min + T_max)
@@ -199,10 +198,9 @@ def parcel_profile(T_env, p_env, qv_env, z0 = 0):
  
     # 2. Above LCL: moist adiabat
     idx_lcl, p_lcl = LCL_idx_p(T_env, p_env, qv_env)
-    # print(p_lcl)
 
     if idx_lcl is not None:
-        T_lcl = dry_adiabatic(T_env[idx_lcl-1], np.array([p_env[idx_lcl-1], p_lcl]))[1]
+        T_lcl = dry_adiabatic(T_parcel[idx_lcl-1], np.array([p_env[idx_lcl-1], p_lcl]))[1]
         qv_lcl = qv_env[0]
         for i in range(idx_lcl, len(T_parcel)):
             if i == idx_lcl:
@@ -235,7 +233,8 @@ def find_EL_LFC_CIN_CAPE(T_env, p_env, qv_env, z0=0, Need_Precise_val = False):
     Tv_par = Tv(T_parcel, qv_parcel)
     B = g * (Tv_par - Tv_env) / Tv_env
     
-    # print(B)
+    for i in range(len(B)):
+        print(B[i], p_env[i])
 
 
     # --------------------------
@@ -245,15 +244,7 @@ def find_EL_LFC_CIN_CAPE(T_env, p_env, qv_env, z0=0, Need_Precise_val = False):
         if Need_Precise_val:
             return None, None, 0, 0, None, None
         else: return None, None, 0,0
-    # LFC_precise, LFC_idx = num.find_cross_point(p_env[LCL_idx:], 
-    #                                             np.zeros_like(B[LCL_idx:]), 
-    #                                             B[LCL_idx:],
-    #                                             log_x=True)
-                                                
-    # if LFC_idx is None:
-    #     return None, None, 0.0, 0.0
-    # else:
-    #     LFC_idx += LCL_idx
+
     LCL_idx_lower = max(LCL_idx - 1, 0)
 
     # ---- 從修正後的位置開始找 LFC ----
