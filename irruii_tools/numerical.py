@@ -3,6 +3,16 @@ import numpy as np
 from scipy.integrate import solve_ivp
 # from scipy.interpolate import interp1d
 
+def first_deriv_1d(f, x):
+    """
+    centeral derivative of f(x), x can be a set of irregular value.
+    """
+    df = np.zeros_like(x)
+    df[1:-1] = (f[2:] - f[:-2]) / (x[2:] - x[:-2])
+    df[0] = (f[1] - f[0]) / (x[1] - x[0])
+    df[-1] = (f[-1] - f[-2]) / (x[-1] - x[-2])    
+    return df
+
 
 def rk4_step(f, y, x, dx):
     k1 = f(y, x) * dx
