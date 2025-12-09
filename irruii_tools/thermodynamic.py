@@ -308,4 +308,22 @@ def find_EL_LFC_CIN_CAPE(T_env, p_env, qv_env, z0=0, Need_Precise_val = False):
     else:
         return LFC_idx, EL_idx, CIN, CAPE
 
+def project_wind_speed_north_ref(u_wind,  v_wind,  angle_deg: float) -> float:
+    """
+    angle 0 is to the north.
+
+    Input:
+        u_wind (float): + to the east
+        v_wind (float): + to the north
+        angle_deg (float): the angle i wanna project
+
+    """
+    u_wind, v_wind = np.array([u_wind, v_wind], dtype=float)
+    angle_rad = np.deg2rad(angle_deg)
+    u_proj = np.sin(angle_rad) 
+    v_proj = np.cos(angle_rad)
     
+
+    projected_speed = u_wind * u_proj + v_wind * v_proj
+    
+    return projected_speed
